@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AccessEase</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+
+<h1>AccessEase Accessibility Tools</h1>
+
+<!-- Text to Speech -->
+<textarea id="text"></textarea>
+<button onclick="speak()">Speak</button>
+
+<!-- Speech to Text -->
+<button onclick="startSTT()">Start Speech</button>
+<p id="output"></p>
+
+<!-- Contrast Mode -->
+<button onclick="toggleContrast()">High Contrast</button>
+
+<!-- Font Size -->
+<button onclick="bigger()">A+</button>
+<button onclick="smaller()">A-</button>
+
+<!-- Load JS file -->
+<script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>
