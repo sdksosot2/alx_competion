@@ -1,0 +1,39 @@
+{% extends 'core/base.html' %}
+{% block title %}Home — AccessEase{% endblock %}
+{% block content %}
+<div class="row">
+  <div class="col-md-8">
+    <h1 class="mb-3">Accessibility tools — improved scaffold</h1>
+    <p class="lead">Small set of helpful features (Text→Speech demo, usage logging, good project structure).</p>
+
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Text → Speech (demo)</h5>
+        <p class="card-text">A simple browser-based TTS demo using the Web Speech API. Works offline in modern browsers.</p>
+        <a class="btn btn-primary" href="/tts/">Open TTS tool</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Developer notes</h5>
+        <ul>
+          <li>Project uses SQLite for quick setup, switch to PostgreSQL for production.</li>
+          <li>Settings are minimal — split settings for dev/prod before deploying.</li>
+          <li>Use environment variables for secret keys and DB credentials.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-body">
+        <h5>Quick actions</h5>
+        <p>Run migrations and create a superuser to access admin.</p>
+        <pre>python manage.py migrate
+python manage.py createsuperuser</pre>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
