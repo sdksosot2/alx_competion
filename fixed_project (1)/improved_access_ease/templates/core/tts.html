@@ -1,0 +1,112 @@
+
+{% extends 'core/base.html' %}
+{%load static %}
+{% block title %}Text to Speech — AccessEase{% endblock %}
+{% block content %}
+<h2>Text → Speech</h2>
+<p>Type text, choose voice settings, and play. This demo uses the browser's Web Speech API — no server processing required.</p>
+
+<div class="mb-3">
+  <label for="text-input" class="form-label">Text</label>
+  <textarea id="text-input" class="form-control" rows="5">Welcome to AccessEase — improve accessibility, quickly.</textarea>
+</div>
+
+<div class="row g-2 mb-3">
+  <div class="col-md-4">
+    <label class="form-label">Rate</label>
+    <input id="rate" type="range" min="0.5" max="2" step="0.1" value="1" class="form-range">
+  </div>
+  <div class="col-md-4">
+    <label class="form-label">Pitch</label>
+    <input id="pitch" type="range" min="0" max="2" step="0.1" value="1" class="form-range">
+  </div>
+  <div class="col-md-4">
+    <label class="form-label">Volume</label>
+    <input id="volume" type="range" min="0" max="1" step="0.1" value="1" class="form-range">
+  </div>
+</div>
+
+<div class="mb-3">
+  <label class="form-label">Voice</label>
+  <select id="voice-select" class="form-select"></select>
+</div>
+
+<div class="mb-3">
+  <button id="play" class="btn btn-success">Play</button>
+  <button id="pause" class="btn btn-secondary">Pause</button>
+  <button id="stop" class="btn btn-danger">Stop</button>
+</div>
+
+<script>
+  // small helper for this demo. Also records usage via /api/record-usage/
+  document.addEventListener('DOMContentLoaded', () => {
+    const textInput = document.getElementById('text-input');
+    const playBtn = document.getElementById('play');
+    const pauseBtn = document.getElementById('pause');
+    const stopBtn = document.getElementById('stop');
+    const voiceSelect = document.getElementById('voice-select');
+    const rate = document.getElementById('rate');
+    const pitch = document.getElementById('pitch');
+    const volume = document.getElementById('volume');
+
+    let utterance = null;
+
+    function populateVoices() {
+      const voices = speechSynthesis.getVoices();
+      voiceSelect.innerHTML = '';
+      voices.forEach(v => {
+        const opt = document.createElement('option');
+        opt.value = v.name;
+        opt.textContent = `${v.name} — ${v.lang}`;
+        voiceSelect.appendChild(opt);
+      });
+    }
+
+    populateVoices();
+    if (speechSynthesis.onvoiceschanged !== undefined) {
+      speechSynthesis.onvoiceschanged = populateVoices;
+    }
+
+    playBtn.addEventListener('click', () => {
+      if (utterance) {
+        speechSynthesis.cancel();
+      }
+      utterance = new SpeechSynthesisUtterance(textInput.value);
+      const selected = speechSynthesis.getVoices().find(v => v.name === voiceSelect.value);
+      if (selected) utterance.voice = selected;
+      utterance.rate = parseFloat(rate.value);
+      utterance.pitch = parseFloat(pitch.value);
+      utterance.volume = parseFloat(volume.value);
+      speechSynthesis.speak(utterance);
+
+      // record usage (demo)
+      fetch('/api/record-usage/?feature=tts&details=' + encodeURIComponent(textInput.value.substring(0,50)))
+        .catch(()=>{});
+    });
+
+    pauseBtn.addEventListener('click', () => {
+      speechSynthesis.pause();
+    });
+
+    stopBtn.addEventListener('click', () => {
+      speechSynthesis.cancel();
+    });
+  });
+</script>
+
+
+<script>
+document.addEventListener("mouseup", function () {
+    let selectedText = window.getSelection().toString().trim();
+
+    if (selectedText.length > 0) {
+        // Speak the selected text
+        let speech = new SpeechSynthesisUtterance(selectedText);
+        speech.lang = "en-US"; // Change language if needed
+        window.speechSynthesis.speak(speech);
+    }
+});
+</script>
+
+
+{% endblock %}
