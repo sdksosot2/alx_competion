@@ -23,3 +23,4 @@ python manage.py runserver
 ## Notes
 
 Replace SECRET_KEY in production and configure Postgres for production use.
+---
